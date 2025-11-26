@@ -10,7 +10,7 @@ export function PostCard({ post }: PostCardProps) {
   
   return (
     <article className="group cursor-pointer h-full flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-      <Link href={`/blog/${post.slug}`} className="flex-1 flex flex-col">
+      <Link href={`/posts/${post.slug}`} className="flex-1 flex flex-col">
         
         <div className="p-6 flex flex-col flex-1">
           {post.category && (

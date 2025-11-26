@@ -7,7 +7,7 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   return (
     <article className="group cursor-pointer flex flex-col">
-      <Link href={"#"} className="flex-1 flex flex-col">
+      <Link href={`/posts/${post.slug}`} className="flex-1 flex flex-col">
         <div className="relative overflow-hidden rounded-lg shadow-sm">
           <img
             src={

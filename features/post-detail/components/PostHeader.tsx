@@ -1,25 +1,28 @@
-interface PostHeaderProps {
-  title: string;
-  authorName: string;
-  authorAvatar: string;
-  views: string;
-  date: string;
-}
+import { format } from "date-fns";
+import { Prisma } from "@prisma/client";
 
-export function PostHeader({ title, authorName, authorAvatar, views, date }: PostHeaderProps) {
+type FullPost = Prisma.PostGetPayload<{
+  include: {
+    category: true;
+    postTags: { include: { tag: true } };
+    author: { select: { id: true; name: true } };
+  };
+}>;
+export function PostHeader({ post }: { post: FullPost }) {
   return (
     <header className="mb-8">
-      <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-gray-900">
-        {title}
+      <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight  ">
+        {post.title}
       </h1>
-      
-      <div className="flex items-center text-sm text-gray-600 space-x-4">
-        <img src={authorAvatar} alt={authorName} className="w-10 h-10 rounded-full mr-3" />
-        <span className="font-medium text-gray-900">By {authorName}</span>
+
+      <div className="flex items-center text-sm space-x-4">
+        <span className="font-medium ">
+          By {post.author?.name}
+        </span>
         <span>•</span>
-        <span>{views} lượt xem</span>
+        <span>17 lượt xem</span>
         <span>•</span>
-        <span>{date}</span>
+        <time>{format(new Date(post.createdAt), "dd MMM, yyyy")}</time>
       </div>
     </header>
   );

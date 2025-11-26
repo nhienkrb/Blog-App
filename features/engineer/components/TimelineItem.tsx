@@ -17,7 +17,7 @@ export function TimelineItem({ post }: PostProps) {
         <time className="text-sm text-muted-foreground block mb-1">  {format(new Date(post.createdAt), "dd MMM, yyyy")}</time>
         
         <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
-          <Link href="#">{post.title}</Link>
+          <Link href={`/posts/${post.slug}`}>{post.title}</Link>
         </h3>
         
         <p className="text-muted-foreground mb-2">{post.content}</p>

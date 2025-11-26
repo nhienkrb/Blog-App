@@ -1,12 +1,16 @@
+import { deletePostAction } from "@/features/admin/action/handlePost";
 import PostForm from "@/features/admin/components/compPost/PostForm";
-import { TableRowAction } from "@/features/admin/components/TableRowAction";
+import { TableRowAction } from "@/features/admin/components/compPost/TableRowAction";
 import { truncate } from "@/lib/utils";
 import { format } from "date-fns";
+import { useState } from "react";
 
 export function PostManager({ posts, categories }: any) {
+  const [editingPost, setEditingPost] = useState(null);
+
   return (
     <div className="animate-fade-in-up">
-      <PostForm categories={categories} />
+      <PostForm categories={categories} editingPost={editingPost} />
       <div className="mt-7 flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <div className="relative w-full sm:w-auto">
           <input
@@ -57,8 +61,8 @@ export function PostManager({ posts, categories }: any) {
                   </td>
                   <td className="px-6 py-4 text-right text-sm font-medium">
                     <TableRowAction
-                      onEdit={() => console.log("Edit post", post.id)}
-                      onDelete={() => console.log("Delete post", post.id)}
+                      onEdit={() => setEditingPost(post)}
+                      onDelete={() => deletePostAction(post.id)}
                     />
                   </td>
                 </tr>

@@ -3,7 +3,7 @@
 import { AdminLayout } from "./AdminLayout";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
-import { PostManager } from "./PostManager";
+import { PostManager } from "./compPost/PostManager";
 import { UserManager } from "./UserManager";
 import { useAdminTabs } from "../hooks/useAdminTabs";
 

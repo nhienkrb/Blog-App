@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,13 +10,17 @@ import {
   CreatePostBodyType,
   CreatePostSchema,
 } from "@/app/schemaValidations/post.schema";
-import { createPostAction } from "@/features/admin/action/handlePost";
+import {
+  createPostAction,
+  updatePostAction,
+} from "@/features/admin/action/handlePost";
 
 interface PostFormProps {
   categories: { id: number; nameCategory: string }[];
+  editingPost?: any;
 }
 
-export default function PostForm({ categories }: PostFormProps) {
+export default function PostForm({ categories, editingPost }: PostFormProps) {
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<CreatePostBodyType>({
@@ -33,15 +37,36 @@ export default function PostForm({ categories }: PostFormProps) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = form;
+
+  useEffect(() => {
+    if (editingPost) {
+      reset({
+        title: editingPost.title,
+        slug: editingPost.slug,
+        content: editingPost.content,
+        categoryId: editingPost.categoryId,
+      });
+    }
+  }, [editingPost, reset]);
 
   async function onSubmit(values: CreatePostBodyType) {
     setError(null);
-    const res = await createPostAction(values);
 
-    if (res?.success === false) {
-      setError(res.message);
+    if (editingPost) {
+      const res = await updatePostAction({ ...values, id: editingPost.id });
+
+      if (!res) return;
+      if (!res.success) {
+        setError(res.message);
+        return;
+      }
     }
+
+    const res = await createPostAction(values);
+    if (!res.success) setError(res.message);
+    reset();
   }
 
   return (
@@ -50,7 +75,9 @@ export default function PostForm({ categories }: PostFormProps) {
       className="space-y-6 max-w-2xl mx-auto p-6 dark:bg-gray-800  bg-white rounded-lg shadow"
     >
       {error && (
-        <div className="p-3 text-red-500 bg-red-50 rounded space-y-2">{error}</div>
+        <div className="p-3 text-red-500 bg-red-50 rounded space-y-2">
+          {error}
+        </div>
       )}
 
       <div className="space-y-2">
@@ -102,7 +129,11 @@ export default function PostForm({ categories }: PostFormProps) {
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "Đang tạo..." : "Đăng bài viết"}
+        {isSubmitting
+          ? "Đang xử lý..."
+          : editingPost
+          ? "Cập nhật bài viết"
+          : "Đăng bài viết"}
       </Button>
     </form>
   );

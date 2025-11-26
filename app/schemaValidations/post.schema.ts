@@ -1,12 +1,12 @@
 import z from 'zod'
 
-// 1. Schema cho Form tạo bài viết (Client gửi lên)
 export const CreatePostSchema = z.object({
   title: z.string()
     .min(5, "Tiêu đề phải có ít nhất 5 ký tự.")
     .max(256, "Tiêu đề không được quá 256 ký tự."),
 
   slug: z.string()
+    .trim()
     .min(5, "Slug phải có ít nhất 5 ký tự")
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug không hợp lệ (chỉ dùng chữ thường, số và dấu gạch ngang)."),
 
@@ -38,10 +38,17 @@ export const PostListRes = z.object({
 })
 export type PostListResType = z.infer<typeof PostListRes>
 
-export const UpdatePostBody = CreatePostSchema.partial()
+export const UpdatePostBody = CreatePostSchema.extend({
+  id: z.number().int().positive()
+})
 export type UpdatePostBodyType = z.infer<typeof UpdatePostBody>
 
 export const PostParams = z.object({
   id: z.coerce.number()
 })
 export type PostParamsType = z.infer<typeof PostParams>
+
+export const PostSlug = z.object({
+  slug: z.string()
+})
+export type PostSlugType = z.infer<typeof PostSlug>
